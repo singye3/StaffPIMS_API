@@ -11,14 +11,13 @@ class HonorsAwardEnum(str, Enum):
 
 
 class QualificationModel(BaseModel):
-    id: int
     institutionid: int
     name: str
     graduationdate: date
     majorfield: str
-    gpagrade: float
+    gpagrade: str
     honorsaward: HonorsAwardEnum
-    staffid: int
+    staffid: str
 
     class Config:
         orm_mode = True

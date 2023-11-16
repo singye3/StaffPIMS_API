@@ -29,6 +29,17 @@ def get_institution_by_id(institution_id: int, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/institutions/name/{name}")
+def get_institution_by_name(name: str, db: Session = Depends(get_db)):
+    try:
+        institutions = db.query(Institution).filter(Institution.name == name).all()
+        if institutions:
+            return institutions
+        else:
+            raise HTTPException(status_code=404, detail="Institution not found")
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/institutions", response_model=InstitutionModel)
 def create_institution(institution: InstitutionModel, db: Session = Depends(get_db)):

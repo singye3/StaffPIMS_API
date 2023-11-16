@@ -29,7 +29,6 @@ class RelationTypeEnum(str, Enum):
 
 
 class DependentModel(BaseModel):
-    number: int
     cid: str
     name: str
     gender: GenderEnum
@@ -39,7 +38,7 @@ class DependentModel(BaseModel):
     relationtype: RelationTypeEnum
     permanentaddress: int
     temporaryaddress: int
-    staffid: int
+    staffid: str
 
     class Config:
         orm_mode = True

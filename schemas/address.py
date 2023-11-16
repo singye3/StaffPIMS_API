@@ -21,7 +21,7 @@ class DzongkhagEnum(str, Enum):
     LHUNTSE = "Lhuentse"
     SARPANG = "Sarpang"
     TRASHI_YANGTSE = "Trashiyangtse"
-    SAMTSE = "samtse"
+    SAMTSE = "Samtse"
 
 
 class AddressCreateSchema(BaseModel):

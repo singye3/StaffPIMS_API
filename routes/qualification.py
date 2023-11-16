@@ -28,7 +28,7 @@ def get_qualification_by_id(qualification_id: int, db: Session = Depends(get_db)
             raise HTTPException(status_code=404, detail="Qualification not found")
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 
 @router.post("/qualifications", response_model=QualificationModel)
 def create_qualification(qualification: QualificationModel, db: Session = Depends(get_db)):

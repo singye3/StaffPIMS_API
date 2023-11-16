@@ -6,11 +6,15 @@ Base = declarative_base()
 metadata = Base.metadata
 
 
+class User(Base):
+    __tablename__ = 'User'
+
+    username = Column(String(255), primary_key=True)
+    password = Column(String(255), nullable=False)
+    role = Column(Enum('admin', 'staff', 'student'), nullable=False)
+
 class Address(Base):
     __tablename__ = 'Address'
-    __table_args__ = (
-        Index('UC_VillageGewogDzongkhag', 'villagename', 'gewog', 'dzongkhag', unique=True),
-    )
 
     addressid = Column(Integer, primary_key=True)
     villagename = Column(String(255), nullable=False)
@@ -34,7 +38,6 @@ class Institution(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     location = Column(String(255), nullable=False)
-    director = Column(String(255), nullable=False)
 
 
 class Staff(Base):
@@ -51,7 +54,6 @@ class Staff(Base):
     dateofbirth = Column(Date, nullable=False)
     permanentaddress = Column(ForeignKey('Address.addressid'), index=True)
     temporaryaddress = Column(ForeignKey('Address.addressid'), index=True)
-    salary = Column(DECIMAL(10, 2), nullable=False)
     joiningdate = Column(Date, nullable=False)
     staffstatus = Column(Enum('active', 'study_leave', 'resignation', 'suspended', 'deceased', 'retired', 'maternity_paternity_leave', 'medical_leave', 'on_leave', 'probationary'), nullable=False)
     positionlevel = Column(Integer, nullable=False)
@@ -109,15 +111,25 @@ class Training(Base):
     trainingid = Column(Integer, primary_key=True)
     institutionid = Column(ForeignKey('Institution.id'), index=True)
     name = Column(String(255), nullable=False)
-    instructorname = Column(String(255), nullable=False)
     startingdate = Column(Date, nullable=False)
     endingdate = Column(Date, nullable=False)
 
     Institution = relationship('Institution')
 
 
-t_StaffTraining = Table(
-    'StaffTraining', metadata,
-    Column('staffid', ForeignKey('Staff.staffid'), primary_key=True, nullable=False),
-    Column('trainingid', ForeignKey('Training.trainingid'), primary_key=True, nullable=False, index=True)
-)
+
+class StaffTraining(Base):
+    __tablename__ = 'StaffTraining'
+    staffid = Column(ForeignKey('Staff.staffid'), primary_key=True, nullable=False)
+    trainingid = Column(ForeignKey('Training.trainingid'), primary_key=True, nullable=False, index=True)
+
+    def __init__(self, staffid, trainingid):
+        self.staffid = staffid
+        self.trainingid = trainingid
+
+
+
+
+
+
+

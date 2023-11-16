@@ -5,13 +5,13 @@ from typing import List
 
 from models.models import Training
 from config.db import SessionLocal
-from schemas.training import TrainingModel,InstituteWithTrainingModel
+from schemas.training import TrainingModel,CreateTrainingModel
 from config.db import get_db
 
 router = APIRouter()
 
 @router.post('/trainings', response_model=TrainingModel)
-def create_training(training_data: TrainingModel, db: Session = Depends(get_db)):
+def create_training(training_data: CreateTrainingModel, db: Session = Depends(get_db)):
     try:
         training = Training(**training_data.dict())
         db.add(training)
@@ -28,7 +28,7 @@ def get_all_trainings(db: Session = Depends(get_db)):
     trainings = db.query(Training).all()
 
     if not trainings:
-        return {"message": "No Trainings"}
+        return []
 
     training_details = []
     for training in trainings:
@@ -36,7 +36,6 @@ def get_all_trainings(db: Session = Depends(get_db)):
             'trainingid': training.trainingid,
             'name': training.name,
             'institution_name': training.Institution.name, # Access the name attribute of the associated Institution object
-            'instructorname': training.instructorname,
             'startingdate': training.startingdate,
             'endingdate': training.endingdate,
         })
@@ -54,10 +53,22 @@ def get_training(training_id: int, db: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail='Training not found')
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get('/trainings/name/{name}')
+def get_training_by_name(name: str, db: Session = Depends(get_db)):
+    try:
+        training = db.query(Training).filter(Training.name == name).all()
+
+        if training:
+            return training
+        else:
+            return []
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.put('/trainings/{training_id}', response_model=TrainingModel)
-def update_training(training_id: int, training_data: TrainingModel, db: Session = Depends(get_db)):
+def update_training(training_id: int, training_data: CreateTrainingModel, db: Session = Depends(get_db)):
     try:
         training = db.query(Training).filter(Training.trainingid == training_id).first()
 

@@ -69,7 +69,6 @@ class StaffModel(BaseModel):
     dateofbirth: date
     permanentaddress: int
     temporaryaddress: int
-    salary: float
     joiningdate: date
     staffstatus: StaffStatusEnum
     positionlevel: int

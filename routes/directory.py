@@ -20,6 +20,14 @@ def get_directory_by_id(directory_id: int, db: Session = Depends(get_db)):
     directory = db.query(Directory).get(directory_id)
     return directory
 
+@router.get("/directories/name/{name}")
+def get_directory_id(name: str, db: Session = Depends(get_db)):
+    directory = db.query(Directory).filter(Directory.name == name).first()
+    if directory:
+        return directory.directoryid
+    else:
+        return {"error": "Directory not found"}
+
 
 @router.post("/directories", response_model=DirectoryModel)
 def create_directory(directory: DirectoryModel, db: Session = Depends(get_db)):
